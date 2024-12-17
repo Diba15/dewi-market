@@ -82,10 +82,30 @@ const totalPrices = () => {
       </p>
     </div>
     <CustomButton
+      onclick="my_modal_1.showModal()"
       :label="'Checkout (' + cartWithoutDuplicates.length + ')'"
       class="w-full btn-neutral max-w-52 self-end md:self-auto"
     />
   </div>
+
+  <!-- Open the modal using ID.showModal() method -->
+  <dialog id="my_modal_1" class="modal">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Konfirmasi Pembelian</h3>
+      <div class="flex justify-between" v-for="item in cartWithoutDuplicates" :key="item.id">
+        <p>{{item.label}} x {{item.quantity}}</p>
+        <p>{{item.price}}</p>
+      </div>
+      <p class="text-end font-bold pt-5">Total Harga: {{totalPrices()}}</p>
+      <div class="modal-action">
+        <form method="dialog" class="flex gap-5">
+          <!-- if there is a button in form, it will close the modal -->
+          <button class="btn">Cancel</button>
+          <button class="btn btn-accent"><i class="pi pi-whatsapp"></i> Checkout</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
 
   <main class="p-4 flex flex-col flex-wrap gap-4 min-h-svh">
     <Notivue v-slot="item">
