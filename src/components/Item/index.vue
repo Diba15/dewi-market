@@ -63,7 +63,7 @@ const deleteQuantity = () => {
       <p class="text-gray-600 font-bold">{{ prices(price) }}</p>
       <div class="card-actions justify-between items-center flex flex-row">
         <button
-          class="btn btn-accent"
+          class="btn btn-accent btn-sm md:btn-md"
           @click="buyItem(id, label, desc, img, prices(price))"
         >
           Buy Now
