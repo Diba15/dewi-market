@@ -1,6 +1,6 @@
 <script setup>
 import CardItem from '@/components/Item/index.vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import CustomButton from '@/components/Button/index.vue'
 import { Notivue, Notification, pastelTheme, push, NotificationProgress } from 'notivue'
 
@@ -10,10 +10,41 @@ defineOptions({
 
 const meals = ref([])
 const displayedMeals = ref([])
+const localCategories = localStorage.getItem('categories')
+const categoriesActive = ref('Dessert')
+try {
+  categoriesActive.value = JSON.parse(localStorage.getItem('categories'))
+} catch {
+  categoriesActive.value = 'Dessert'
+}
 let limit = ref(10)
 let offset = ref(0)
 const render = ref(true)
+const isLoading = ref(true)
 const cart = JSON.parse(localStorage.getItem('cart')) || []
+
+if (!localCategories) {
+  localStorage.setItem('categories', JSON.stringify('Dessert'))
+}
+
+const categories = [
+  {
+    str: 'Dessert',
+    code: 'Dessert',
+  },
+  {
+    str: 'Ayam',
+    code: 'Chicken',
+  },
+  {
+    str: 'Daging Sapi',
+    code: 'Beef',
+  },
+  {
+    str: 'Seafood',
+    code: 'Seafood',
+  },
+]
 
 // Remove Duplicates
 const cartWithoutDuplicates = cart.reduce((unique, o) => {
@@ -34,24 +65,39 @@ function reRender() {
 // Pagination
 const hasMoreMeals = computed(() => meals.value.length > displayedMeals.value.length)
 
-// Get Meals
-if (localStorage.getItem('meals')) {
-  meals.value = JSON.parse(localStorage.getItem('meals'))
-  displayedMeals.value = meals.value.slice(0, limit.value)
-} else {
-  onMounted(async () => {
-    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=Dessert`, {
+// Get Meals from
+async function getMeals(category) {
+  const response = await fetch(
+    `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`,
+    {
       method: 'GET',
       mode: 'cors',
-    })
-    const data = await response.json()
-    meals.value = data.meals
-    meals.value.forEach((meal) => {
-      meal.price = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000)
-    })
-    displayedMeals.value = meals.value.slice(0, limit.value)
-    localStorage.setItem('meals', JSON.stringify(meals.value))
+    },
+  )
+  const data = await response.json()
+  meals.value = data.meals
+  meals.value.forEach((meal) => {
+    meal.price = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000)
+    meal.category = category
   })
+  displayedMeals.value = meals.value.slice(0, limit.value)
+  localStorage.setItem('meals', JSON.stringify(meals.value))
+
+  await nextTick();
+  console.log(displayedMeals.value)
+}
+
+// Get Meals in local storage for fast load
+if (localStorage.getItem('meals')) {
+  isLoading.value = false
+  meals.value = JSON.parse(localStorage.getItem('meals'))
+  displayedMeals.value = meals.value.slice(0, limit.value)
+
+  setTimeout(() => {
+    isLoading.value = false
+  }, 1000)
+} else {
+  getMeals(categoriesActive.value.toString())
 }
 
 // Load More Items
@@ -115,36 +161,37 @@ function buyItem(id, label, desc, img, price) {
   }
 }
 
-const categoriesActive = ref('Dessert')
-
 const changeCategory = (category) => {
-  categoriesActive.value = category
+  try {
+    categoriesActive.value = category
+    localStorage.setItem('categories', JSON.stringify(category))
+    localStorage.setItem('meals', JSON.stringify([]))
+    displayedMeals.value = []
+    isLoading.value = true
+
+    console.log(category)
+    getMeals(category)
+
+    setTimeout(() => {
+      isLoading.value = false
+    }, 1000)
+  } catch (error) {
+    console.error(error)
+  }
 }
 </script>
 
 <template>
-  <div class="flex rounded-xl p-4 justify-center">
-    <div class="flex items-center gap-4">
+  <div class="flex rounded-xl p-4 justify-center transition-all duration-300 fade-from-top">
+    <div class="flex flex-wrap justify-center items-center gap-4">
       <button
+        v-for="category in categories"
+        :key="category.str"
         class="py-2 px-4 border-2 border-accent hover:bg-accent hover:text-black active:scale-95 transition-all rounded-full"
-        :class="{ 'bg-accent text-black': categoriesActive === 'Dessert' }"
-        @click="changeCategory('Dessert')"
+        :class="{ 'bg-accent text-black': categoriesActive === category.code }"
+        @click="changeCategory(category.code)"
       >
-        Dessert
-      </button>
-      <button
-        class="py-2 px-4 border-2 border-accent hover:bg-accent hover:text-black active:scale-95 transition-all rounded-full"
-        :class="{ 'bg-accent text-black': categoriesActive === 'Makanan' }"
-        @click="changeCategory('Makanan')"
-      >
-        Makanan
-      </button>
-      <button
-        class="py-2 px-4 border-2 border-accent hover:bg-accent hover:text-black active:scale-95 transition-all rounded-full"
-        :class="{ 'bg-accent text-black': categoriesActive === 'Minuman' }"
-        @click="changeCategory('Minuman')"
-      >
-        Minuman
+        {{ category.str }}
       </button>
     </div>
   </div>
@@ -161,14 +208,42 @@ const changeCategory = (category) => {
   </div>
 
   <main class="p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
+    <div v-if="isLoading" class="flex flex-row gap-4 justify-evenly w-full">
+      <div class="flex justify-center w-52 flex-col gap-4">
+        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-full"></div>
+      </div>
+      <div class="flex justify-center w-52 flex-col gap-4">
+        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-full"></div>
+      </div>
+      <div class="flex justify-center w-52 flex-col gap-4">
+        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-full"></div>
+      </div>
+      <div class="flex justify-center w-52 flex-col gap-4">
+        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-full"></div>
+      </div>
+    </div>
     <CardItem
       v-for="item in displayedMeals"
+      v-show="!isLoading"
       :key="item.idMeal"
       :id="item.idMeal"
       :price="item.price"
       :label="item.strMeal"
       :desc="item.strTags"
       :img="item.strMealThumb"
+      :category="item.category"
       :buy-item="buyItem"
     />
   </main>
@@ -218,6 +293,23 @@ const changeCategory = (category) => {
 @media (max-width: 768px) {
   :root {
     --nv-root-x-align: center;
+  }
+}
+
+.fade-from-top {
+  animation-name: fade-from-top;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+@keyframes fade-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 </style>

@@ -24,6 +24,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  category: {
+    type: String,
+    required: true,
+  },
   buyItem: {
     type: Function,
     required: true,
@@ -47,12 +51,12 @@ const deleteQuantity = () => {
 </script>
 
 <template>
-  <div class="card card-compact bg-base-100 w-72 shadow-xl">
+  <div class="card card-compact bg-base-100 w-60 md:w-72 shadow-xl">
     <figure>
       <img :src="img" :alt="label" />
     </figure>
     <div class="card-body">
-      <div class="badge badge-accent badge-outline">Dessert</div>
+      <div class="badge badge-accent badge-outline">{{category}}</div>
       <h2 class="card-title">{{ label }}</h2>
       <p class="text-gray-600 font-bold">{{ prices(price) }}</p>
       <div class="card-actions justify-between items-center flex flex-row">
