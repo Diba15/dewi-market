@@ -212,8 +212,8 @@ const changeCategory = (category) => {
     Menu Populer
   </div>
 
-  <!-- Meals -->
-  <div class="p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
+  <!-- Popular Meals -->
+  <div class="p-1 md:p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
     <!--  Loading  -->
     <div v-if="isLoading" class="flex flex-row gap-4 justify-evenly w-full">
       <div class="flex justify-center w-52 flex-col gap-4">
@@ -261,7 +261,7 @@ const changeCategory = (category) => {
   </div>
 
   <!-- Meals -->
-  <main class="p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
+  <main class="p-1 md:p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
     <!--  Loading  -->
     <div v-if="isLoading" class="flex flex-row gap-4 justify-evenly w-full">
       <div class="flex justify-center w-52 flex-col gap-4">
