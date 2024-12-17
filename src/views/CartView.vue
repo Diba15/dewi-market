@@ -35,6 +35,7 @@ function updateQuantity(id, quantity) {
     })
     localStorage.setItem('cart', JSON.stringify(updatedCart))
     cartWithoutDuplicates.splice(0, cartWithoutDuplicates.length, ...updatedCart)
+    reRender()
   } catch (error) {
     console.error(error)
   }
@@ -75,7 +76,7 @@ const totalPrices = () => {
   >
     <div>
       <h1 class="text-2xl font-bold text-[#3A2424]">Ringkasan Keranjang</h1>
-      <p class="text-[#3A2424] font-semibold">
+      <p class="text-[#3A2424] font-semibold" v-show="render">
         Total Harga:
         {{ totalPrices() }}
       </p>
@@ -95,7 +96,7 @@ const totalPrices = () => {
 
 
     <div
-      class="w-full hidden md:flex flex-row items-center justify-between p-4 bg-accent rounded-xl"
+      class="w-full hidden md:flex flex-row items-center justify-between p-4 shadow rounded-xl"
     >
       <h1 class="font-bold">Produk</h1>
       <div class="flex flex-row gap-10 justify-between pe-10">
@@ -121,6 +122,10 @@ const totalPrices = () => {
       :onClick="deleteItem"
       :updatedQuantity="updateQuantity"
     />
+    <p class="text-center text-gray-600" v-if="cartWithoutDuplicates !== 0">
+      Makanan kamu kurang banyak nih :)
+    </p>
+
   </main>
 </template>
 

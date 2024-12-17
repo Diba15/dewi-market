@@ -116,26 +116,21 @@ function buyItem(id, label, desc, img, price) {
   try {
     const cart = JSON.parse(localStorage.getItem('cart')) || []
 
-    const quantity = document.getElementById('quantity' + id).innerHTML
+    const quantity = 1
 
     // Check if item already in cart, if quantity is different then update it.
     // Else show error
     if (cart.some((item) => item.id === id)) {
-      if (cart.some((item) => item.id === id && item.quantity !== quantity)) {
-        cart.forEach((item) => {
-          if (item.id === id) {
-            item.quantity = quantity
-          }
-        })
-        localStorage.setItem('cart', JSON.stringify(cart))
-        cartWithoutDuplicates.splice(0, cartWithoutDuplicates.length, ...cart)
-        push.success(`${label} berhasil diperbarui di keranjang`)
-        reRender()
-        return
-      } else {
-        push.error('item sudah ada di keranjang')
-        return
-      }
+      cart.forEach((item) => {
+        if (item.id === id) {
+          item.quantity += 1
+        }
+      })
+      localStorage.setItem('cart', JSON.stringify(cart))
+      cartWithoutDuplicates.splice(0, cartWithoutDuplicates.length, ...cart)
+      push.success(`${label} berhasil diperbarui di keranjang`)
+      reRender()
+      return
     }
 
     if (parseInt(quantity) === 0) {
@@ -213,7 +208,7 @@ const changeCategory = (category) => {
   </div>
 
   <!-- Popular Meals -->
-  <div class="p-1 md:p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
+  <div class="p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
     <!--  Loading  -->
     <div v-if="isLoading" class="flex flex-row gap-4 justify-evenly w-full">
       <div class="flex justify-center w-52 flex-col gap-4">
@@ -261,7 +256,7 @@ const changeCategory = (category) => {
   </div>
 
   <!-- Meals -->
-  <main class="p-1 md:p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
+  <main class="p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
     <!--  Loading  -->
     <div v-if="isLoading" class="flex flex-row gap-4 justify-evenly w-full">
       <div class="flex justify-center w-52 flex-col gap-4">

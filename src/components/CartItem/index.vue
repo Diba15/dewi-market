@@ -112,7 +112,7 @@ const cancelDelete = () => {
     </div>
   </div>
 
-  <div class="flex flex-row justify-between bg-accent rounded-xl h-fit md:h-32 p-4">
+  <div class="flex flex-row justify-between shadow rounded-xl h-fit md:h-32 p-4">
     <div class="flex flex-col md:flex-row gap-4 w-full items-center justify-center">
       <img :src="img" :alt="label" class="h-48 md:h-24 w-48 md:w-24" />
       <div class="flex flex-col md:flex-row items-center justify-between w-full">
@@ -123,11 +123,11 @@ const cancelDelete = () => {
             class="flex flex-row items-center gap-2"
             :class="{ 'pointer-events-none': isDisable }"
           >
-            <button class="btn btn-circle btn-xs btn-neutral" @click="deleteQuantity">
+            <button class="btn btn-circle btn-xs btn-accent" @click="deleteQuantity">
               <i class="pi pi-minus"></i>
             </button>
             <span class="text-2xl font-bold" :id="'quantity' + id">{{ quantity }}</span>
-            <button class="btn btn-circle btn-xs btn-neutral" @click="addQuantity">
+            <button class="btn btn-circle btn-xs btn-accent" @click="addQuantity">
               <i class="pi pi-plus"></i>
             </button>
           </div>
