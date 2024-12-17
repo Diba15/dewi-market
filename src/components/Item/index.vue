@@ -35,7 +35,9 @@ const props = defineProps({
 })
 
 const prices = (price) => {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price)
+  let prices = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price)
+  prices = prices.slice(0, -3)
+  return prices
 }
 
 const addQuantity = () => {

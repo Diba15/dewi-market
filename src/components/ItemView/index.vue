@@ -10,6 +10,7 @@ defineOptions({
 
 const meals = ref([])
 const displayedMeals = ref([])
+const popularMeals = ref([])
 const localCategories = localStorage.getItem('categories')
 const categoriesActive = ref('Dessert')
 try {
@@ -67,13 +68,10 @@ const hasMoreMeals = computed(() => meals.value.length > displayedMeals.value.le
 
 // Get Meals from
 async function getMeals(category) {
-  const response = await fetch(
-    `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`,
-    {
-      method: 'GET',
-      mode: 'cors',
-    },
-  )
+  const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`, {
+    method: 'GET',
+    mode: 'cors',
+  })
   const data = await response.json()
   meals.value = data.meals
   meals.value.forEach((meal) => {
@@ -83,7 +81,10 @@ async function getMeals(category) {
   displayedMeals.value = meals.value.slice(0, limit.value)
   localStorage.setItem('meals', JSON.stringify(meals.value))
 
-  await nextTick();
+  popularMeals.value = displayedMeals.value.sort(() => 0.5 - Math.random()).slice(0, 4)
+  localStorage.setItem('popularMeals', JSON.stringify(popularMeals.value))
+
+  await nextTick()
   console.log(displayedMeals.value)
 }
 
@@ -92,6 +93,9 @@ if (localStorage.getItem('meals')) {
   isLoading.value = false
   meals.value = JSON.parse(localStorage.getItem('meals'))
   displayedMeals.value = meals.value.slice(0, limit.value)
+
+  popularMeals.value = displayedMeals.value.sort((a, b) => b.price - a.price).slice(0, 4)
+  localStorage.setItem('popularMeals', JSON.stringify(popularMeals.value))
 
   setTimeout(() => {
     isLoading.value = false
@@ -183,6 +187,7 @@ const changeCategory = (category) => {
 
 <template>
   <div class="flex rounded-xl p-4 justify-center transition-all duration-300 fade-from-top">
+    <!--  Categories  -->
     <div class="flex flex-wrap justify-center items-center gap-4">
       <button
         v-for="category in categories"
@@ -204,10 +209,12 @@ const changeCategory = (category) => {
   </Notivue>
 
   <div class="divider divider-accent max-w-screen-xl mx-auto pacifico text-[#3A2424] text-2xl">
-    Menu
+    Menu Populer
   </div>
 
-  <main class="p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
+  <!-- Meals -->
+  <div class="p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
+    <!--  Loading  -->
     <div v-if="isLoading" class="flex flex-row gap-4 justify-evenly w-full">
       <div class="flex justify-center w-52 flex-col gap-4">
         <div class="skeleton h-32 w-full"></div>
@@ -234,6 +241,55 @@ const changeCategory = (category) => {
         <div class="skeleton h-4 w-full"></div>
       </div>
     </div>
+    <!--  Meals  -->
+    <CardItem
+      v-for="item in popularMeals"
+      v-show="!isLoading"
+      :key="item.idMeal"
+      :id="item.idMeal"
+      :price="item.price"
+      :label="item.strMeal"
+      :desc="item.strTags"
+      :img="item.strMealThumb"
+      :category="item.category"
+      :buy-item="buyItem"
+    />
+  </div>
+
+  <div class="divider divider-accent max-w-screen-xl mx-auto pacifico text-[#3A2424] text-2xl">
+    Menu
+  </div>
+
+  <!-- Meals -->
+  <main class="p-4 flex flex-row flex-wrap w-full gap-4 justify-evenly lato">
+    <!--  Loading  -->
+    <div v-if="isLoading" class="flex flex-row gap-4 justify-evenly w-full">
+      <div class="flex justify-center w-52 flex-col gap-4">
+        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-full"></div>
+      </div>
+      <div class="flex justify-center w-52 flex-col gap-4">
+        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-full"></div>
+      </div>
+      <div class="flex justify-center w-52 flex-col gap-4">
+        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-full"></div>
+      </div>
+      <div class="flex justify-center w-52 flex-col gap-4">
+        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-full"></div>
+      </div>
+    </div>
+    <!--  Meals  -->
     <CardItem
       v-for="item in displayedMeals"
       v-show="!isLoading"
@@ -247,6 +303,7 @@ const changeCategory = (category) => {
       :buy-item="buyItem"
     />
   </main>
+  <!--  Load More  -->
   <div class="flex flex-col gap-4 py-5">
     <CustomButton
       label="Load More"
@@ -260,10 +317,10 @@ const changeCategory = (category) => {
   <!--  Action button  -->
   <div class="toast toast-end cursor-pointer">
     <RouterLink v-show="render" to="/cart" class="alert alert-success bg-accent rounded-full">
-      <div class="flex items-center gap-4 font-bold">
+      <div class="flex items-center gap-2 font-bold justify-center">
         <i class="pi pi-shopping-cart"></i>
         <h1 class="text-md">
-          Cart <span>({{ cartWithoutDuplicates.length }})</span>
+          Keranjang <span>({{ cartWithoutDuplicates.length }})</span>
         </h1>
       </div>
     </RouterLink>
