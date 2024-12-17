@@ -53,7 +53,7 @@ const deleteQuantity = () => {
 </script>
 
 <template>
-  <div class="card card-compact bg-base-100 w-60 md:w-72 shadow-xl">
+  <div class="card card-compact bg-base-100 w-56 md:w-72 shadow-xl">
     <figure>
       <img :src="img" :alt="label" />
     </figure>
