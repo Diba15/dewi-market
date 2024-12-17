@@ -39,21 +39,10 @@ const prices = (price) => {
   prices = prices.slice(0, -3)
   return prices
 }
-
-// const addQuantity = () => {
-//   const quantity = document.getElementById('quantity' + props.id)
-//   quantity.innerHTML = parseInt(quantity.innerHTML) + 1
-// }
-//
-// const deleteQuantity = () => {
-//   const quantity = document.getElementById('quantity' + props.id)
-//   if (quantity.innerHTML === '0') return
-//   quantity.innerHTML = parseInt(quantity.innerHTML) - 1
-// }
 </script>
 
 <template>
-  <div class="card card-compact bg-base-100 w-44 md:w-72 shadow-xl">
+  <div class="card card-compact bg-base-100 w-36 md:w-72 shadow-xl">
     <figure>
       <img :src="img" :alt="label" />
     </figure>
