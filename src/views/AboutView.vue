@@ -8,6 +8,13 @@
     </div>
   </div>
 
+  <!-- Notification -->
+  <Notivue v-slot="item">
+    <Notification :item="item" :theme="pastelTheme">
+      <NotificationProgress :item="item" />
+    </Notification>
+  </Notivue>
+
   <div class="-mt-8 flex flex-col justify-center gap-5 glass p-8 mx-5 md:mx-32 rounded-xl">
     <div class="collapse collapse-arrow bg-accent text-[#3A2424]">
       <input type="radio" name="my-accordion-2" checked="checked" />
@@ -45,42 +52,90 @@
     </div>
   </div>
 
-  <section>
-    <div
-      class="flex flex-col items-center mx-auto max-w-fit md:max-w-fit text-center rounded-xl my-8 text-[#3A2424]"
-    >
-      <h1 class="text-3xl md:text-5xl font-bold pacifico">Social Media</h1>
-      <div class="min-h-2 min-w-full border-2 border-[#3A2424] bg-[#3A2424] rounded-full"></div>
-    </div>
+  <div class="flex flex-wrap flex-col md:flex-row items-start md:items-center justify-around mx-5 md:mx-32">
+    <section>
+      <div
+        class="flex flex-col items-center max-w-fit md:max-w-fit text-center rounded-xl my-8 text-[#3A2424]"
+      >
+        <h1 class="text-2xl md:text-3xl font-bold pacifico">Alamat</h1>
+        <div class="min-h-2 min-w-full border-2 border-[#3A2424] bg-[#3A2424] rounded-full"></div>
+      </div>
 
-    <div class="flex flex-row flex-wrap gap-10 justify-center">
-      <div
-        class="p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
-      >
-        <i class="pi pi-instagram text-5xl"></i>
+      <div class="flex flex-row flex-wrap gap-10 justify-center">
+        <div id="address" class="text-center flex flex-col gap-2">
+          <div data-tip="Jl. Raya Bogor No. 123, Jakarta" @click="copyToClipboard('Jl. Raya Bogor No. 123, Jakarta')"
+            class="tooltip tooltip-bottom tooltip-accent p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
+          >
+            <i class="pi pi-map-marker text-3xl"></i>
+          </div>
+        </div>
+        <div id="phone" class="text-center flex flex-col gap-2">
+          <div data-tip="088889999" @click="copyToClipboard('088889999')"
+            class="tooltip tooltip-bottom tooltip-accent p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
+          >
+            <i class="pi pi-phone text-3xl"></i>
+          </div>
+        </div>
+        <div id="email" class="text-center flex flex-col gap-2">
+          <div data-tip="dewi_market@mail.com"
+            class="tooltip tooltip-bottom tooltip-accent p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
+          >
+            <i class="pi pi-envelope text-3xl"></i>
+          </div>
       </div>
-      <div
-        class="p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
-      >
-        <i class="pi pi-whatsapp text-5xl"></i>
       </div>
+    </section>
+    <section>
       <div
-        class="p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
+        class="flex flex-col items-center max-w-fit md:max-w-fit text-center rounded-xl my-8 text-[#3A2424]"
       >
-        <i class="pi pi-tiktok text-5xl"></i>
+        <h1 class="text-2xl md:text-3xl font-bold pacifico">Social Media</h1>
+        <div class="min-h-2 min-w-full border-2 border-[#3A2424] bg-[#3A2424] rounded-full"></div>
       </div>
-      <div
-        class="p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
-      >
-        <i class="pi pi-facebook text-5xl"></i>
+
+      <div class="flex flex-row flex-wrap gap-10 justify-center">
+        <div id="instagram" class="text-center flex flex-col gap-2">
+          <div data-tip="@dewi_market99"
+            class="tooltip tooltip-bottom tooltip-accent p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
+          >
+            <i class="pi pi-instagram text-3xl"></i>
+          </div>
+        </div>
+        <div id="whatsapp" class="text-center flex flex-col gap-2">
+          <div data-tip="088889999"
+            class="tooltip tooltip-bottom tooltip-accent p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
+          >
+            <i class="pi pi-whatsapp text-3xl"></i>
+          </div>
+        </div>
+        <div id="tiktok" class="text-center flex flex-col gap-2">
+          <div data-tip="@dewi_market99"
+            class="tooltip tooltip-bottom tooltip-accent p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
+          >
+            <i class="pi pi-tiktok text-3xl"></i>
+          </div>
+        </div>
+        <div id="facebook" class="text-center flex flex-col gap-2">
+          <div data-tip="Dewi Market"
+            class="tooltip tooltip-bottom tooltip-accent p-10 cursor-pointer rounded-full border-2 border-[#3A2424] max-w-fit text-[#3A2424] hover:bg-[#3A2424] hover:text-accent transition-all duration-300"
+          >
+            <i class="pi pi-facebook text-3xl"></i>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <div class="min-h-10"></div>
 </template>
 
 <style></style>
 
-<script setup lang="ts">
+<script setup>
+import { Notification, NotificationProgress, Notivue, pastelTheme, push } from 'notivue'
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text);
+  push.success('Berhasil Disalin')
+}
 </script>
